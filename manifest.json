@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "YouTubeSmartBookmarker",
+  "version": "1.0",
+  "permissions": ["bookmarks", "tabs", "activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/watch?v=*"],
+      "js": ["content.js"]
+    }
+  ]
+}
