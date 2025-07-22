@@ -24,6 +24,18 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
   }
 });
 
+// Handle browser closure
+chrome.runtime.onSuspend.addListener(() => {
+  console.log('Background: Browser closing, processing bookmarks for all tabs');
+  Object.keys(tabData).forEach(tabId => {
+    if (tabData[tabId]) {
+      console.log(`Background: Processing bookmark for tab ${tabId} with timestamp ${tabData[tabId].timestamp}`);
+      createOrUpdateBookmark(tabData[tabId]);
+      delete tabData[tabId];
+    }
+  });
+});
+
 // Create or update bookmark
 function createOrUpdateBookmark(data) {
   const url = `https://www.youtube.com/watch?v=${data.videoId}&t=${Math.floor(data.timestamp)}s`;
@@ -77,7 +89,7 @@ function createOrUpdateBookmark(data) {
   });
 }
 
-// Format timestamp as mm:ss
+// Format timestamp as mm:ss or hh:mm:ss
 function formatTime(seconds) {
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
