@@ -56,7 +56,7 @@ function createOrUpdateBookmark(data) {
       });
     });
 
-    // Wait for all removals to complete before creating new bookmark
+    // Wait for all removals to complete
     Promise.all(removalPromises).then(() => {
       console.log('Background: All existing bookmarks removed, creating new bookmark');
       chrome.bookmarks.create({
@@ -79,7 +79,11 @@ function createOrUpdateBookmark(data) {
 
 // Format timestamp as mm:ss
 function formatTime(seconds) {
-  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
   const secs = Math.floor(seconds % 60);
+  if (hours > 0) {
+    return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }
   return `${minutes}:${secs.toString().padStart(2, '0')}`;
 }

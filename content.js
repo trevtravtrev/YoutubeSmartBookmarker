@@ -20,12 +20,17 @@ function getTimestamp() {
   const timeDisplay = document.querySelector('.ytp-time-current');
   let timestamp = 0;
   if (timeDisplay && timeDisplay.textContent) {
-    const timeParts = timeDisplay.textContent.split(':');
-    if (timeParts.length >= 2) {
-      const minutes = parseInt(timeParts[timeParts.length - 2], 10) || 0;
-      const seconds = parseInt(timeParts[timeParts.length - 1], 10) || 0;
+    const timeParts = timeDisplay.textContent.split(':').map(part => parseInt(part, 10) || 0);
+    if (timeParts.length === 3) {
+      // Format: HH:MM:SS
+      const [hours, minutes, seconds] = timeParts;
+      timestamp = hours * 3600 + minutes * 60 + seconds;
+      console.log(`Content: Timestamp from display (HH:MM:SS): ${hours}h ${minutes}m ${seconds}s = ${timestamp}s`);
+    } else if (timeParts.length === 2) {
+      // Format: MM:SS
+      const [minutes, seconds] = timeParts;
       timestamp = minutes * 60 + seconds;
-      console.log(`Content: Timestamp from display: ${timestamp}`);
+      console.log(`Content: Timestamp from display (MM:SS): ${minutes}m ${seconds}s = ${timestamp}s`);
     } else {
       console.log('Content: Invalid time display format');
     }
@@ -35,7 +40,7 @@ function getTimestamp() {
     const video = document.querySelector('.video-stream.html5-main-video');
     if (video && typeof video.currentTime === 'number' && !isNaN(video.currentTime)) {
       timestamp = video.currentTime;
-      console.log(`Content: Fallback to video currentTime: ${timestamp}`);
+      console.log(`Content: Fallback to video currentTime: ${timestamp}s`);
     }
   }
   return timestamp;
